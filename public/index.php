@@ -36,7 +36,6 @@
 		//End all scripts.
 		die();
 	}
-	require "controller/authentification.php";
 
 	$files = array("rooms/get_all_rooms",
 				   "spots/get_all_spots",
@@ -61,7 +60,9 @@
 				   "rooms/delete_room",
 				   "spots/delete_spot",
 				   "rooms/delete_room_res",
-				   "spots/delete_spot_res",);
+				   "spots/delete_spot_res",
+				
+				   "authentification.php");
 
 	
 
