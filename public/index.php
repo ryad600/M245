@@ -37,39 +37,36 @@
 		die();
 	}
 
-	$files = array("rooms/get_all_rooms",
-				   "spots/get_all_spots",
-				   "rooms/get_all_room_res",
-				   "spots/get_all_spot_res",
+	$files = array("rooms/room_db/get_all_rooms",
+				   "spots/spots_db/get_all_spots",
+				   "rooms/reservations/get_all_room_res",
+				   "spots/reservations/get_all_spot_res",
 
-				   "rooms/get_one_room",
-				   "spots/get_one_spot",
-				   "rooms/get_one_room_res",
-				   "spots/get_one_spot_res",
+				   "rooms/room_db/get_one_room",
+				   "spots/spots_db/get_one_spot",
+				   "rooms/reservations/get_one_room_res",
+				   "spots/reservations/get_one_spot_res",
 
-				   "rooms/post_room",
-				   "spots/post_spot",
-				   "rooms/post_room_res",
-				   "spots/post_spot_res",
+				   "rooms/room_db/post_room",
+				   "spots/spots_db/post_spot",
+				   "rooms/reservations/post_room_res",
+				   "spots/reservations/post_spot_res",
 
-				   "rooms/put_room",
-				   "spots/put_spot",
-				   "rooms/put_room_res",
-				   "spots/put_spot_res",
+				   "rooms/room_db/put_room",
+				   "spots/spots_db/put_spot",
+				   "rooms/reservations/put_room_res",
+				   "spots/reservations/put_spot_res",
 
-				   "rooms/delete_room",
-				   "spots/delete_spot",
-				   "rooms/delete_room_res",
-				   "spots/delete_spot_res",
+				   "rooms/room_db/delete_room",
+				   "spots/spots_db/delete_spot",
+				   "rooms/reservations/delete_room_res",
+				   "spots/reservations/delete_spot_res",
 				
 				   "authentification.php");
 
-	
-
-	for ($i = 1; $i < count($files); $i++) { 
-		require "controller/" . $files[($i - 1)] . ".php";
+	foreach ($file as $file) {
+		require "controller/" . $files . ".php";
 	}
-
 
 	$app->run();
 ?>
