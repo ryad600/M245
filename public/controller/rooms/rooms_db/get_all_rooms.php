@@ -6,27 +6,27 @@
 
 	/**
      * @OA\Get(
-     *     path="/Products",
-     *     summary="Get a list of all products",
-     *     tags={"Products"},
-     *     @OA\Response(response="200", description="Prodcut list was succesfully fetched."),
-     *     @OA\Response(response="404", description="There were no Products found."),
+     *     path="/Rooms",
+     *     summary="Get a list of all rooms",
+     *     tags={"Rooms"},
+     *     @OA\Response(response="200", description="Room list was succesfully fetched."),
+     *     @OA\Response(response="404", description="There were no Rooms found."),
      *     @OA\Response(response="500", description="Internal server error.")
      * )	   
  	 */
 
-	$app->get("/Products", function (Request $request, Response $response, $args) {
+	$app->get("/Rooms", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$products = get_all_products();
+		$rooms = get_all_rooms();
 
-		if (is_string($products)) {
-			error($products, 500);
+		if (is_string($rooms)) {
+			error($rooms, 500);
 		}
 		else {
-			echo json_encode($products);
+			echo json_encode($rooms);
 		}
 		return $response;
 	});

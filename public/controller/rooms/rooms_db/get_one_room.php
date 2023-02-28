@@ -7,11 +7,11 @@
 
 	/**
      * @OA\get(
-     *     path="/Product/{product_id}",
+     *     path="/Product/{room}",
      *     summary="Gets you the specified product.",
      *     tags={"Products"},
      *     @OA\Parameter(
-     *         name="product_id",
+     *         name="room",
      *         in="path",
      *         required=true,
      *         description="Used for when the client needs to see info to one product.",
@@ -26,21 +26,21 @@
      * )
 	 */
 
-	$app->get("/Product/{product_id}", function (Request $request, Response $response, $args) {
+	$app->get("/Room/{room}", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$product = get_one_product($args["product_id"]);
+		$room = get_one_room($args["room"]);
 
-		if (is_string($product)) {
-			error($products, 500);
+		if (is_string($room)) {
+			error($rooms, 500);
 		}
-		else if (!$product) {
-			error("There exists no product with the id '" . $args["product_id"] . "'.", 404);
+		else if (!$room) {
+			error("There exists no room with the id '" . $args["room"] . "'.", 404);
 		}
 		else {
-			echo json_encode($product);
+			echo json_encode($room);
 		}
 		return $response;
 	});

@@ -59,7 +59,7 @@
 
 		$product_id = intval($args["product_id"]);
 
-		$product = get_one_product($product_id);
+		$product = get_one_room($product_id);
 
 
 		if (!$product) {
@@ -181,7 +181,7 @@
 
 		//update the product
 
-		if (update_product($product["product_id"], $sku, $active, $id_category, $name, $image, $description, $price, $stock) === true) {
+		if (update_room($product["product_id"], $sku, $active, $id_category, $name, $image, $description, $price, $stock) === true) {
 			http_response_code(201);
 			echo "true";
 		}

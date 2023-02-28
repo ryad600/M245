@@ -28,25 +28,25 @@
 	 */	
 
 
-	$app->delete("/Product/{product_id}", function (Request $request, Response $response, $args) {
+	$app->delete("/Room_reservation/{room}", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$args["product_id"] = strip_tags(addslashes($args["product_id"]));
+		$args["room"] = strip_tags(addslashes($args["room"]));
 
 		//Delete the product
-		$product = delete_product($args["product_id"]);
+		$product = delete_product($args["room"]);
 
 
-		if (is_string($product)) {
-			error($products, 500);
+		if (is_string($room)) {
+			error($room, 500);
 		}
-		else if (!$product) {
-			error("There exists no product with the id '" . $args["product_id"] . "'.", 404);
+		else if (!$room) {
+			error("There exists no product with the id '" . $args["room"] . "'.", 404);
 		}
 		else {
-			echo json_encode($product);
+			echo json_encode($room);
 		}
 		return $response;
 	});

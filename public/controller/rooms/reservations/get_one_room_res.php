@@ -26,18 +26,18 @@
      * )
 	 */
 
-	$app->get("/Product/{product_id}", function (Request $request, Response $response, $args) {
+	$app->get("/Room_reservation/{room_res_ID}", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$product = get_one_product($args["product_id"]);
+		$room_res = get_one_room($args["room_res_ID"]);
 
-		if (is_string($product)) {
-			error($products, 500);
+		if (is_string($room_res)) {
+			error($room_res, 500);
 		}
-		else if (!$product) {
-			error("There exists no product with the id '" . $args["product_id"] . "'.", 404);
+		else if (!$room_res) {
+			error("There exists no product with the id '" . $args["room_res_ID"] . "'.", 404);
 		}
 		else {
 			echo json_encode($product);

@@ -2,11 +2,9 @@
 	require "database.php";
 	/**
 	 * This funktion is to create a new category.
-	 * @param $active shows if category is active or not.
-	 * @param $name has the name of the new category.
 	 * @returns true if succesfull.
 	 */
-	function create_new_category($active, $name) {
+	function create_new_spots($active, $name) {
 		global $database;
 
 		$result = $database->query("INSERT INTO category(active, name) VALUES($active, '$name')");
@@ -21,13 +19,10 @@
 	}
 	/**
 	 * This funktion is to update an existing category.
-	 * @param $category_id is to identify which category should be edited.
-	 * @param $active shows if category is active or not.
-	 * @param $name has the name of the new category.
 	 * @returns true if succesfull.
 	 * @returns false on fail.
 	 */
-	function update_category($category_id, $active, $name) {
+	function update_spots($category_id, $active, $name) {
 		global $database;
 
 		$result = $database->query("UPDATE category SET active = $active, name = '$name' WHERE category_id = $category_id");
@@ -40,10 +35,9 @@
 	}
 	/**
 	 * This funktion is to view a specific category.
-	 * @param $category_id is to identify which category should be viewed.
 	 * @returns $category the category that was specified.
 	 */
-	function get_one_category($category_id) {
+	function get_one_spots($category_id) {
 		global $database;
 
 		$result = $database->query("SELECT * FROM category WHERE category_id = '$category_id'");
@@ -65,7 +59,7 @@
 	 * This funktion is to view all categories.
 	 * @returns $categories all categories. 
 	 */
-	function get_all_categories() {
+	function get_all_spots() {
 		global $database;
 
 		$result = $database->query("SELECT * FROM category");
@@ -87,11 +81,10 @@
 	}
 	/**
 	 * This funktion is to delete a specific category.
-	 * @param $category_id is to identify which category should be deleted.
 	 * @returns true if succesful.
 	 * @returns flase if failed.
 	 */
-	function delete_category($category_id) {
+	function delete_spots($category_id) {
 		global $database;
 
 
