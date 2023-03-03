@@ -28,7 +28,7 @@
 	 */	
 
 
-	$app->delete("/Room_reservation/{room}", function (Request $request, Response $response, $args) {
+	$app->delete("/Room_reservation/{id}", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
@@ -36,7 +36,7 @@
 		$args["room"] = strip_tags(addslashes($args["room"]));
 
 		//Delete the product
-		$product = delete_product($args["room"]);
+		$room = delete_room($args["room"]);
 
 
 		if (is_string($room)) {

@@ -3,40 +3,8 @@
 	use Psr\Http\Message\ServerRequestInterface as Request;
 	use Slim\Factory\AppFactory;
 
-	/**
-     * @OA\put(
-     *     path="/Category/{category_id}",
-     *     summary="Edits an existing category.",
-     *     tags={"Categories"},
-     *         @OA\Parameter(
-     *         name="category_id",
-     *         in="path",
-     *         required=true,
-     *         description="Used to find the specified category.",
-     *         @OA\Schema(
-     *             type="integer",
-     *             example="1"
-     *         )
-     *     ),
-     *     requestBody=@OA\RequestBody(
-     *         request="/Category/{category_id}",
-     *         required=true,
-     *         description="The Category information is passed to the server via the request body.",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(property="active", type="boolean", example="1"),
-     *                 @OA\Property(property="name", type="string", example="electronics")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Category was succesfully updated."),
-     * 	   @OA\Response(response="400", description="The client forgot to fill in the text fields"),
-     *     @OA\Response(response="500", description="Internal server error.")
-     * )
-     */
 
-	$app->put("/Category/{category_id}", function (Request $request, Response $response, $args) {
+	$app->put("/Parking_spots/{spot}", function (Request $request, Response $response, $args) {
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
@@ -46,13 +14,15 @@
 		//Parse the JSON string.
 		$request_data = json_decode($request_body_string, true);
 
-		if (!check_category_id($args["category_id"])) {
-			error("The category has not been found.", 404);
-		}
+		$spot = intval($args["spot"]);
 
-		$category_id = intval($args["category_id"]);
+		$old_spot = get_one_spot($spot);
 
-		$category = get_one_category($category_id);
+		$new_spot = $request_data["spot"];
+
+
+
+
 
 
 		if (!$category) {

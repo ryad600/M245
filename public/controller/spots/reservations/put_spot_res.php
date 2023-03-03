@@ -3,40 +3,8 @@
 	use Psr\Http\Message\ServerRequestInterface as Request;
 	use Slim\Factory\AppFactory;
 
-	/**
-     * @OA\put(
-     *     path="/Category/{category_id}",
-     *     summary="Edits an existing category.",
-     *     tags={"Categories"},
-     *         @OA\Parameter(
-     *         name="category_id",
-     *         in="path",
-     *         required=true,
-     *         description="Used to find the specified category.",
-     *         @OA\Schema(
-     *             type="integer",
-     *             example="1"
-     *         )
-     *     ),
-     *     requestBody=@OA\RequestBody(
-     *         request="/Category/{category_id}",
-     *         required=true,
-     *         description="The Category information is passed to the server via the request body.",
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(property="active", type="boolean", example="1"),
-     *                 @OA\Property(property="name", type="string", example="electronics")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response="200", description="Category was succesfully updated."),
-     * 	   @OA\Response(response="400", description="The client forgot to fill in the text fields"),
-     *     @OA\Response(response="500", description="Internal server error.")
-     * )
-     */
 
-	$app->put("/Category/{category_id}", function (Request $request, Response $response, $args) {
+	$app->put("/Spot_reservation/{spot_res_id}", function (Request $request, Response $response, $args) {
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
@@ -46,52 +14,76 @@
 		//Parse the JSON string.
 		$request_data = json_decode($request_body_string, true);
 
-		if (!check_category_id($args["category_id"])) {
-			error("The category has not been found.", 404);
-		}
+		$spot_res_id = intval($args["spot_res_id"]);
 
-		$category_id = intval($args["category_id"]);
+		$spot_res = get_one_spot_res($spot_res_id);
+		
 
-		$category = get_one_category($category_id);
-
-
-		if (!$category) {
+		if (!$spot_res) {
 			error("There is no category with the id '$category_id'.", 404);
 		}
-		else if (is_string($category)) {
-			error($category, 500);
+		else if (is_string($spot_res)) {
+			error($spot_res, 500);
 		}
 
-		//check active
-
-		if (isset($request_data["active"])) {
-			
-			if (!is_numeric($request_data["active"]) || $request_data["active"] > 2) {
-				error("Please enter 1 for active or a 0 for not active in the active field.", 400);
+		//check and update the chosen SPOT
+		if (isset($request_data["spot"])) {
+			$request_data["spot"] = strip_tags(addslashes($request_data["spot"]));
+			if (strlen($request_data["spot"]) > 2) {
+				error("Choose a valid Parkingspot", 400);
 			}
-			$active = $request_data["active"];
-		}
-		else {
-			$active = $category["active"];
-		}
-
-		//check name
-
-		if (isset($request_data["name"])) {
-			$name = strip_tags(addslashes($request_data["name"]));
-
-			if (strlen($name) > 500) {
-				error("The name is too long. Please use less than 500 characers.", 400);
+			else {
+				$spot = $request_data["spot"];
 			}
 		}
 		else {
-			$name = $category["name"];
+			$spot = $spot_res["spot"];
 		}
 
-		
+		//check and update the chosen reservation time
+		if (isset($request_data["res_from"])) {
+			$request_data["res_from"] = strip_tags(addslashes($request_data["res_from"]));
+			if (strlen($request_data["res_from"]) > 5) {
+				error("Please enter a valid time", 400);
+			}
+			else {
+				$res_from = $request_data["res_from"];
+			}
+		}
+		else {
+			$res_from = $spot_res["res_from"];
+		}
+
+		//check and update the chosen reservation time
+		if (isset($request_data["res_till"])) {
+			$request_data["res_till"] = strip_tags(addslashes($request_data["res_till"]));
+			if (strlen($request_data["res_till"]) > 5) {
+				error("Please enter a valid time", 400);
+			}
+			else {
+				$res_till = $request_data["res_till"];
+			}
+		}
+		else {
+			$res_till = $spot_res["res_till"];
+		}
+
+		//check and update the chosen reservation date
+		if (isset($request_data["date"])) {
+			$request_data["date"] = strip_tags(addslashes($request_data["date"]));
+			if (strlen($request_data["date"]) > 10) {
+				error("Choose a valid reservation date", 400);
+			}
+			else {
+				$date = $request_data["date"];
+			}
+		}
+		else {
+			$date = $spot_res["date"];
+		}
+
 		//update the category
-
-		if (update_category($category["category_id"], $active, $name) === true) {
+		if (update_spot_res($spot_res_id, $spot, $res_from, $res_till, $date) === true) {
 			http_response_code(201);
 			echo "true";
 		}

@@ -2,16 +2,23 @@
 		require "database.php";
 		/**
 		 * This funktion is to create a new product.
-		 * 
+		 * @param $sku is the identifier of the product.
+		 * @param $active shows if product is active or not.
+		 * @param $id_category shows in what category it belongs.
+		 * @param $name shows its name.
+		 * @param $image is a ling to an image of the prpduct.
+		 * @param $description shows what the product is.
+		 * @param $price shows the price of the product.
+		 * @param $stock shows how many are left.
 		 * @returns true if succesfull.
 		 */
-		function create_new_room_res($room, $res_from, $res_till, $date, $user ) {
+		function create_new_room($room, $story) {
 			global $database;
 
-			$result = $database->query("INSERT INTO product(room, reserved, res_from, res_till, date, user) VALUES('$room', 'TRUE', $res_from, '$res_till', '$date', '$user')");
+			$result = $database->query("INSERT INTO rooms(room, story) VALUES('$room', $story)");
 
 			if (!$result) {
-				error("An error occured while saving the room reservation", 500);
+				error("An error occured while saving the product", 500);
 			}
 			else {
 				return true;
@@ -20,13 +27,15 @@
 		}
 		/**
 		 * This funktion is to create a new product.
+		 * @param $room is to identify which product should be edited.
+		 * @param $story is the identifier of the product.
 		 * @returns true if succesfull.
 		 * @returns false if failed.
 		 */
-		function update_room_res($product_id, $sku, $active, $id_category, $name, $image, $description, $price, $stock) {
+		function update_room_res($room, $story) {
 			global $database;
 
-			$result = $database->query("UPDATE product SET sku = '$sku', active = $active, id_category = $id_category, name = '$name', image = '$image', description =  '$description', price = $price, stock = $stock WHERE product_id = $product_id");
+			$result = $database->query("UPDATE rooms SET room = '$room', story = $story");
 			if (!$result) {
 				return false;
 			}
@@ -36,15 +45,16 @@
 		}
 		/**
 		 * This funktion is to view a specific product.
+		 * @param $category_id is to identify which product should be viewed.
 		 * @returns $product the product that was specified.
 		 */
-		function get_one_room_res($product_id) {
+		function get_one_room_res($room) {
 			global $database;
 
-			$result = $database->query("SELECT * FROM product WHERE product_id = '$product_id'");
+			$result = $database->query("SELECT * FROM rooms WHERE room = '$room'");
 
 			if (!$result) {
-				error("An error occured while fetching the product.", 500);
+				error("An error occured while fetching the room.", 500);
 			}
 			else if ($result === true || $result->num_rows == 0) {
 			return array();
@@ -60,10 +70,10 @@
 		 * This funktion is to view all products.
 		 * @returns $products all products. 
 		 */
-		function get_all_rooms_res() {
+		function get_all_rooms() {
 			global $database;
 
-			$result = $database->query("SELECT * FROM product");
+			$result = $database->query("SELECT * FROM rooms");
 
 			if (!$result) {
 				error("An error occured while fetching the products.", 500);
@@ -82,21 +92,19 @@
 		}
 		/**
 		 * This funktion is to delete a specific product.
+		 * @param $product_id is to identify which product should be deleted.
 		 * @returns true if succesful.
 		 * @returns flase if failed.
 		 */
-		function delete_room_res($product_id) {
+		function delete_room($room) {
 			global $database;
-
-
-
-			$result = $database->query("DELETE FROM product WHERE product_id = '$product_id'");
+			$result = $database->query("DELETE FROM rooms WHERE room = '$room'");
 
 			if (!$result) {
 				error("An error occured while deleting the product.", 500);
 			}
 			else if ($database->affected_rows == 0) {
-				error("This reservation has not been found", 404);
+				return false;
 			}	
 			else {
 				return true;

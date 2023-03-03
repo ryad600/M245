@@ -14,7 +14,7 @@
      *     @OA\Response(response="500", description="Internal server error.")
      * )	   
  	 */
-
+	 
 	$app->get("/Rooms", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.

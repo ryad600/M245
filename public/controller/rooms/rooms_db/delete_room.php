@@ -28,7 +28,7 @@
 	 */	
 
 
-	$app->delete("/Room/{room}", function (Request $request, Response $response, $args) {
+	$app->delete("/Rooms/{room}", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";

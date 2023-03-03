@@ -4,10 +4,10 @@
 	 * This funktion is to create a new category.
 	 * @returns true if succesfull.
 	 */
-	function create_new_spots($active, $name) {
+	function create_new_spot($spot) {
 		global $database;
 
-		$result = $database->query("INSERT INTO category(active, name) VALUES($active, '$name')");
+		$result = $database->query("INSERT INTO parking_spots(spot) VALUES('$spot')");
 
 		if (!$result) {
 			error("An error occured while saving the product", 500);
@@ -22,10 +22,10 @@
 	 * @returns true if succesfull.
 	 * @returns false on fail.
 	 */
-	function update_spots($category_id, $active, $name) {
+	function update_spots($category_id, $active, $spot_id) {
 		global $database;
 
-		$result = $database->query("UPDATE category SET active = $active, name = '$name' WHERE category_id = $category_id");
+		$result = $database->query("UPDATE parking_spots SET active = $active, name = '$name' WHERE category_id = $category_id");
 		if (!$result) {
 			return false;
 		}
@@ -37,13 +37,13 @@
 	 * This funktion is to view a specific category.
 	 * @returns $category the category that was specified.
 	 */
-	function get_one_spots($category_id) {
+	function get_one_spot($spot_id) {
 		global $database;
 
-		$result = $database->query("SELECT * FROM category WHERE category_id = '$category_id'");
+		$result = $database->query("SELECT * FROM parking_spots WHERE spot = '$spot_id'");
 
 		if (!$result) {
-			error("An error occured while fetching the category.", 500);
+			error("An error occured while fetching the parking spot.", 500);
 		}
 		else if ($result === true || $result->num_rows == 0) {
 		return array();
@@ -62,10 +62,10 @@
 	function get_all_spots() {
 		global $database;
 
-		$result = $database->query("SELECT * FROM category");
+		$result = $database->query("SELECT * FROM parking_spots");
 
 		if (!$result) {
-			error("An error occured while fetching the categories.", 500);
+			error("An error occured while fetching the parking spots.", 500);
 		}
 		else if ($result === true || $result->num_rows == 0) {
 		return array();
@@ -84,15 +84,15 @@
 	 * @returns true if succesful.
 	 * @returns flase if failed.
 	 */
-	function delete_spots($category_id) {
+	function delete_spot($spot) {
 		global $database;
 
 
 
-		$result = $database->query("DELETE FROM category WHERE category_id = '$category_id'");
+		$result = $database->query("DELETE FROM parking_spots WHERE spot = '$spot'");
 
 		if (!$result) {
-			error("An error occured while deleting the category.", 500);
+			error("An error occured while deleting the parking spot.", 500);
 		}
 		else if ($database->affected_rows == 0) {
 			return false;

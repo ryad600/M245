@@ -33,7 +33,7 @@
      * )
      */
 
-	$app->post("/Product", function (Request $request, Response $response, $args) {
+	$app->post("/Room_reservation/post", function (Request $request, Response $response, $args) {
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 

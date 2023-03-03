@@ -42,7 +42,7 @@
      * )
      */
 
-	$app->put("/Product/{product_id}", function (Request $request, Response $response, $args) {
+	$app->put("/Room_reservation/put/{room_res_ID}", function (Request $request, Response $response, $args) {
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
@@ -52,136 +52,85 @@
 		//Parse the JSON string.
 		$request_data = json_decode($request_body_string, true);
 
-		if (!check_product_id($args["product_id"])) {
-			error("The category has not been found.", 404);
+		if (!check_room_res_ID($args["room_res_ID"])) {
+			error("The Room-Reservation has not been found.", 404);
+		}
+		$room_res = intval($args["room_res_ID"]);
+		$room_res = get_one_room_res($room_res);
+
+		if (!$room_res) {
+			error("There is no Room-Reservation with the id '$room_res'.", 404);
+		}
+		else if (is_string($room_res)) {
+			error($room_res, 500);
 		}
 
+		//check reserved
 
-		$product_id = intval($args["product_id"]);
-
-		$product = get_one_product($product_id);
-
-
-		if (!$product) {
-			error("There is no product with the id '$product_id'.", 404);
-		}
-		else if (is_string($product)) {
-			error($product, 500);
-		}
-
-		//check sku
-
-		if (isset($request_data["sku"])) {
-			$sku = strip_tags(addslashes($request_data["sku"]));
-
-			if (strlen($request_data["sku"]) > 100) {
-				error("The SKU is too long. Please use less than 100 characers.", 400);
-			}
-		}
-		else {
-			$sku = $product["sku"];
-		}
-
-		//check active
-
-		if (isset($request_data["active"])) {
+		if (isset($request_data["reserverd"])) {
+			$reserved = strip_tags(addslashes($request_data["reserved"]));
 			
-			if (!is_numeric($request_data["active"]) || $request_data["active"] > 2) {
-				error("Please enter 1 for active or a 0 for not active in the active field.", 400);
-			}
-			$active = $request_data["active"];
-		}
-		else {
-			$active = $product["active"];
-		}
-
-		//check id_category
-
-		if (isset($request_data["id_category"])) {
-
-			if (!is_numeric($request_data["id_category"])) {
-				error("Please enter a number in the id category field.", 400);
+			// Überprüfen, ob es sich bei dem Wert um eine boolsche oder eine ganze Zahl handelt
+			if (filter_var($request_data["reserved"], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null && filter_var($request_data["reserved"], FILTER_VALIDATE_INT) === false) {
+			error("Invalid value for 'reserved'. Please use 0, 1, true, or false.", 400);
 			}
 
-			if ($request_data["id_category"] == 0) {
-				$request_data["id_category"] = "NULL";
+			// Falls der Wert eine boolsche Zahl ist, konvertieren Sie ihn in eine ganze Zahl.
+			$reserved = filter_var($request_data["reserved"], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+			if ($reserved === null) {
+				$reserved = (int) $request_data["reserved"];
 			}
-			else if (!check_category_id($request_data["id_category"])) {
-				error("This category doesn't exist", 404);
+		} else {
+			$reserved = $room_res["reserved"];
+		}
+
+		//check date (res_from)
+		if (isset($request_data["res_from"])) {
+			$res_from = strip_tags(addslashes($request_data["res_from"]));
+		
+			// Überprüfen, ob der Wert eine gültige Zeitdarstellung ist.
+			if (strtotime($res_from) === false) {
+				error("Invalid value for \"Reservation von\". Please use a valid time value.", 400);
 			}
-			$id_category = $request_data["id_category"];
-		}
-		else {
-			$id_category = $product["id_category"] ?? "NULL";
+		} else {
+			$res_from = $room_res["res_from"];
 		}
 
-		//check name
-
-		if (isset($request_data["name"])) {
-			$name = strip_tags(addslashes($request_data["name"]));
-
-			if (strlen($name) > 500) {
-				error("The name is too long. Please use less than 500 characers.", 400);
+		//check date (res_till)
+		if (isset($request_data["res_till"])) {
+			$res_till = strip_tags(addslashes($request_data["res_till"]));
+		
+			// Überprüfen, ob der Wert eine gültige Zeitdarstellung ist.
+			if (strtotime($res_till) === false) {
+				error("Invalid value for \"Reservation bis\". Please use a valid time value.", 400);
 			}
+		} else {
+			$res_till = $room_res["res_till"];
 		}
-		else {
-			$name = $product["name"];
-		}
-
-		//check image
-
-		if (isset($request_data["image"])) {
-			$image = strip_tags(addslashes($request_data["image"]));
-
-			if (strlen($image) > 1000) {
-				error("The image link is too long. Please use less than 1000 characers.", 400);
+		
+		// check date (date)
+		if (isset($room_res["date"])) {
+			// Überprüfen, ob der Wert ein gültiges Datum ist.
+			if (!DateTime::createFromFormat('Y-m-d', $room_res["date"])) {
+				error("Invalid value for \"date\". Please use a valid date value in the format YYYY-MM-DD.", 400);
 			}
-		}
-		else {
-			$image = $product["image"];
-		}
-
-		//check description
-
-		if (isset($request_data["description"])) {
-			$description = strip_tags(addslashes($request_data["description"]));
-		}
-		else {
-			$description = $product["description"];
+		} else {
+			$date = $room_res["date"];
 		}
 
-		//check price
-
-		if (isset($request_data["price"])) {
-
-			if (!is_numeric($request_data["price"])) {
-				error("Please enter a nummber in the price field.", 400);
+		//check user
+		if (isset($room_res["user"])) {
+			$user = $room_res["user"];
+			if (!is_string($user)) {
+				error("Invalid value for \"user\". Please use a string value.", 400);
 			}
-			if (strlen($request_data["price"]) > 65) {
-				error("Please enter a nummber with less than 65 characters", 400);
-			}
-
-			$price = $request_data["price"];
-		}
-		else {
-			$price = $product["price"];
+		} else {
+			$user = $room_res["user"];
 		}
 
-		//check stock
+		//update the room_res
 
-		if (isset($request_data["stock"])) {
-			if (!is_numeric($request_data["stock"])) {
-				error("Please enter a nummber in the stock field.", 400);
-			}
-			$stock = $request_data["stock"];
-		}
-		else {
-			$stock = $product["stock"];
-		}
-
-		//update the product
-
-		if (update_product($product["product_id"], $sku, $active, $id_category, $name, $image, $description, $price, $stock) === true) {
+		if (update_room_res($room_res["room_res_ID"], $reseverd, $res_from, $res_till, $date, $user) === true) {
 			http_response_code(201);
 			echo "true";
 		}
@@ -191,5 +140,3 @@
 
 		return $response;
 		});
-
-?>

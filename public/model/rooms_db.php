@@ -12,10 +12,10 @@
 		 * @param $stock shows how many are left.
 		 * @returns true if succesfull.
 		 */
-		function create_new_room($sku, $active, $id_category, $name, $image, $description, $price, $stock) {
+		function create_new_room($room, $story) {
 			global $database;
 
-			$result = $database->query("INSERT INTO product(sku, active, id_category, name, image, description, price, stock) VALUES('$sku', $active, $id_category, '$name', '$image', '$description', $price, $stock)");
+			$result = $database->query("INSERT INTO rooms(room, story) VALUES('$room', $story)");
 
 			if (!$result) {
 				error("An error occured while saving the product", 500);
@@ -48,13 +48,13 @@
 		 * @param $category_id is to identify which product should be viewed.
 		 * @returns $product the product that was specified.
 		 */
-		function get_one_room($product_id) {
+		function get_one_room($room) {
 			global $database;
 
-			$result = $database->query("SELECT * FROM product WHERE product_id = '$product_id'");
+			$result = $database->query("SELECT * FROM rooms WHERE room = '$room'");
 
 			if (!$result) {
-				error("An error occured while fetching the product.", 500);
+				error("An error occured while fetching the room.", 500);
 			}
 			else if ($result === true || $result->num_rows == 0) {
 			return array();
@@ -96,7 +96,7 @@
 		 * @returns true if succesful.
 		 * @returns flase if failed.
 		 */
-		function delete_room($rooms) {
+		function delete_room($room) {
 			global $database;
 			$result = $database->query("DELETE FROM rooms WHERE room = '$room'");
 

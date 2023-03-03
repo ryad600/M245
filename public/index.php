@@ -7,8 +7,8 @@
 
 	require __DIR__ . "/../vendor/autoload.php";
 	require_once "config/config.php";
-	require "model/product.php";
-	require "model/category.php";
+	//require "model/product.php";
+	//require "model/category.php";
 	require "model/id_check.php";
 
 

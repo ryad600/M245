@@ -24,18 +24,16 @@
 	 * @returns true if succesfull.
 	 * @returns false if failed.
 	 */
-	function check_product_id($id) {
+	function check_spot($spot) {
 		global $database;
 
-		$result = $database->query("SELECT * FROM product WHERE product_id = $id");
+		$result = $database->query("SELECT * FROM parking_spots WHERE spot = $spot");
 
 		if ($result->num_rows == 0) {
 			return false;
 		}
 		else {
 			return true;
-			
 		}
 	}
-
 ?>

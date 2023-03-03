@@ -15,18 +15,18 @@
      * )	   
  	 */
 
-	$app->get("/Products", function (Request $request, Response $response, $args) {
+	$app->get("/Room_reservation", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$products = get_all_products();
+		$rooms = get_all_room_reservation();
 
-		if (is_string($products)) {
-			error($products, 500);
+		if (is_string($rooms)) {
+			error($rooms, 500);
 		}
 		else {
-			echo json_encode($products);
+			echo json_encode($rooms);
 		}
 		return $response;
 	});

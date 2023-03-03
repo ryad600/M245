@@ -4,30 +4,19 @@
 	use Psr\Http\Message\ServerRequestInterface as Request;
 	use Slim\Factory\AppFactory;
 
-	/**
-     * @OA\Get(
-     *     path="/Categories",
-     *     summary="Get a list of all categories",
-     *     tags={"Categories"},
-     *     @OA\Response(response="200", description="Category list was succesfully fetched."),
-     *     @OA\Response(response="404", description="There were no Categories found."),
-     *     @OA\Response(response="500", description="Internal server error.")
-     * )	   
- 	 */
 
-
-	$app->get("/Categories", function (Request $request, Response $response, $args) {
+	$app->get("/Parking_spots", function (Request $request, Response $response, $args) {
 
 		//Check the client's authentication.
 		require "controller/require_authentication.php";
 
-		$categories = get_all_categories();
+		$spots = get_all_spots();
 
-		if (is_string($categories)) {
-			error($categories, 500);
+		if (is_string($spots)) {
+			error($spots, 500);
 		}
 		else {
-			echo json_encode($categories);
+			echo json_encode($spots);
 		}
 		return $response;
 	});
